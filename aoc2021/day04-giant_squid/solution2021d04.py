@@ -40,7 +40,7 @@ def bingo_runner(bingostream, boards, find_last_winner=False):
     # BEWARE OF THE TRAP! THIS WON'T WORK: boards_state = [ [[False]*ncolumns_board]*nrows_board ]*num_boards
     # explanation: Lists are objects. The same list instance of [[False]*ncolumns_board] is referenced for all rows and boards!
     # this is why altering an element alters also all rows in all boards
-    # soruce: https://stackoverflow.com/questions/2397141/how-to-initialize-a-two-dimensional-array-in-python#answer-44382900
+    # source: https://stackoverflow.com/questions/2397141/how-to-initialize-a-two-dimensional-array-in-python#answer-44382900
 
     # sequencially draw numbers
     for n in bingostream:
@@ -84,8 +84,6 @@ def board_score(board, board_state):
                 score += board[irow][icolumn]
     return score
 
-
-
 def winner_checker(board_state):
     column_checker = [True]*len(board_state[0])
     res = False
@@ -103,7 +101,6 @@ def winner_checker(board_state):
             res = True
             break # A complete column was found
     return res
-
 
 def print_bingo(bingostream, boards):
     print(f"bingostream: {bingostream}")
