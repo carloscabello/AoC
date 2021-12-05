@@ -23,12 +23,15 @@ def bingo_load(filepath):
     
     return bingostream, boards
 
-def bingo_runner(bingostream, boards):
+def bingo_runner(bingostream, boards, find_last_winner=False):
     num_boards = len(boards)
     nrows_board = len(boards[0])
     ncolumns_board = len(boards[0][0])
     res = 0 # final score
- 
+
+    # registry so if find_last_winner=True, register winner boards and skip them to save time
+    board_win_registry = [False]*num_boards
+    board_winner_n = -1
 
     # variable for storing already 'called' numbers
     # boards_state[num_boards][nrows_board][ncolumns_board]
@@ -42,6 +45,8 @@ def bingo_runner(bingostream, boards):
     # sequencially draw numbers
     for n in bingostream:
         for iboard, board in enumerate(boards):
+            if find_last_winner and board_win_registry[iboard]:
+                continue
             for irow, row in enumerate(board):
                 for icolumn, elem in enumerate(row):
                     if elem==n:
@@ -49,12 +54,24 @@ def bingo_runner(bingostream, boards):
             
             # after marking the board for all ocurrences of the drawed number n, check if it is a winner board
             if winner_checker(boards_state[iboard]):
+                
                 # calculate the final score if it was a winning board
                 b_score = board_score(board, boards_state[iboard])
                 res = n * b_score
-                print(f"Winner found for number drawed {n} and board{iboard+1} with score {b_score}")
-                break
-        if 0<res:
+                board_winner_n = iboard
+                if not find_last_winner:
+                    print(f"First winner found for number drawed {n}: board{board_winner_n+1} with score {b_score}")
+                    break
+                # if find_last_winner is not passed, we keep looking for the rest of the winners
+                else:
+                    board_win_registry[iboard] = True # winner board is registered
+
+        # if find_last_winner is false we stop searching
+        if 0<res and not find_last_winner:
+            break
+        # if find_last_winner is true we stop when the last board has won
+        elif all(board_won for board_won in board_win_registry):
+            print(f"Last winner found for number drawed {n}: board{board_winner_n+1} with score {b_score}")
             break
 
     return res
@@ -116,8 +133,8 @@ def main():
         print(f"Puzzle input (example)\n")
         print_bingo(bingostream, boards)
 
-    print(f"Answer (part 1): {bingo_runner(bingostream, boards)}") # Correct example answer: 4512
-    print(f"Answer (part 2): {None}") # Correct example answer:
+    print(f"Answer (part 1): {bingo_runner(bingostream, boards)}\n") # Correct example answer: 4512
+    print(f"Answer (part 2): {bingo_runner(bingostream, boards, True)}") # Correct example answer: 1924
     pass
  
 if __name__ == "__main__": 
