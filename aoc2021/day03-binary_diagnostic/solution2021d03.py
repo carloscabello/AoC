@@ -38,9 +38,7 @@ def life_rating(inputdata):
 
     o2bin = rating_finder('', inputdata, True)
     co2bin = rating_finder('', inputdata, False)
-
-    print(f"o2: {o2bin}; co2: {co2bin}")
-
+    
     o2 = int(o2bin,base=2)
     co2 = int(co2bin,base=2)
 
@@ -84,59 +82,6 @@ def binlist_filter(binmask, inputlist):
             inputlist.remove(elem)
     return inputlist
 
-def life_rating_bak(inputdata):
-    nlines = len(inputdata)     # size of the inputdata list
-    ndigits = len(inputdata[0]) # assuming all binary numbers have the same number of digits
-    o2mask = [0] * ndigits
-    co2mask = [0] * ndigits
-
-
-    for inputline in inputdata:
-        linedigits = list(map(int,list(inputline)) ) # str to int list
-        for j in range(len(ac)):
-            ac[j] += linedigits[j]
-
-    # mask need to be calculated on the fly! as the counter iterator only include the remaining numbers!!!        
-
-    o2mask = ''
-    co2mask = ''
-
-    for n_one in ac:
-        if nlines - n_one <= n_one: # more or equal 1s and zeros
-            o2mask += '1' # most common is 1
-            co2mask +='0' # leat common is 0
-        else:
-            o2mask += '0'
-            co2mask +='1'
-
-    o2 = int(number_finder(o2mask, inputdata),base=2)
-    co2 = int(number_finder(co2mask, inputdata),base=2)
-
-    return o2*co2
-
-## This is VERY ineficcient, a recursive version would be better
-def number_finder(mask, binlist):
-    number_found = ''
-    discarded_indices = set()
-    for i in range(len(mask)+1):
-        filtered_list = list_excluder(discarded_indices, binlist)
-        if len(filtered_list) <=1:
-            number_found = filtered_list[0]
-            break
-        else:        
-            filtered_indices = set(range(len(binlist))) - discarded_indices
-            for j in filtered_indices:
-                if mask[:i+1]!=binlist[j][:i+1]:
-                    discarded_indices.add(j)
-    
-    return number_found
-
-def list_excluder(excluded_indices, inputlist):
-    res = []
-    for i in set(range(len(inputlist))) - excluded_indices:
-        res.append(inputlist[i])
-    return res
- 
 def main():
     # run script with arguments: load the input file
     inputdata = []
@@ -149,7 +94,7 @@ def main():
 
     print(f"Answer (part 1): {power_consumption(inputdata)}") # Correct example answer: 150
     print(f"Answer (part 2): {life_rating(inputdata)}") # Correct example answer: 230
-    pass 
+    pass
  
 if __name__ == "__main__": 
 	main()
